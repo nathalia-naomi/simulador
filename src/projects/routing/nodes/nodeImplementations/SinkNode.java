@@ -1,7 +1,7 @@
 package projects.routing.nodes.nodeImplementations;
 
 import projects.routing.nodes.messages.WsnMessage;
-import projects.routing.nodes.timers.WsnMessageTimer;
+import projects.routing.nodes.timers.WsnTimer;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
@@ -10,7 +10,7 @@ import sinalgo.nodes.messages.Message;
 public class SinkNode extends Node {
 
     private Node nextNodeToBase;
-    private Integer sequenceNumber;
+    private Integer sequenceNumber = 0;
 
     @Override
     public void handleMessages(Inbox inbox) {
@@ -19,7 +19,7 @@ public class SinkNode extends Node {
             if (msg instanceof WsnMessage) {
                 Boolean forward = Boolean.TRUE;
                 WsnMessage message = (WsnMessage) msg;
-                if (message.forwardingHop.equals(this)) forward = Boolean.FALSE;
+                if (this.equals(message.forwardingHop)) forward = Boolean.FALSE;
                 else if (message.type == WsnMessage.Type.ROUTE) {
                     if (nextNodeToBase == null) {
                         nextNodeToBase = inbox.getSender();
@@ -44,7 +44,7 @@ public class SinkNode extends Node {
     public void buildRouting() {
         this.nextNodeToBase = this;
         WsnMessage wsnMessage = new WsnMessage(1, this, null, this, WsnMessage.Type.ROUTE);
-        WsnMessageTimer timer = new WsnMessageTimer(wsnMessage);
+        WsnTimer timer = new WsnTimer(wsnMessage);
         timer.startRelative(1, this);
     }
 

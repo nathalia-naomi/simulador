@@ -4,7 +4,7 @@ import projects.routing.nodes.messages.WsnMessage;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.messages.Inbox;
 
-public class ServerNode extends Node {
+public class SensorNode extends Node {
 
     private Node sinkNode;
 
